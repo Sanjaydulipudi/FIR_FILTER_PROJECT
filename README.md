@@ -25,19 +25,3 @@ All modules were handwritten and tested in simulation:
 | `tb_fir_filter.v` | Full testbench with simulation results         |
 
 All internal signals and arithmetic operations are *signed* to support both positive and negative data.
-
-📁 Folder Structure
-
-fir-filter-verilog/
-├── src/
-│   ├── fir_filter.v
-│   ├── dff_16bit.v
-│   ├── mul_16bit.v
-│   ├── rca_32bit.v
-├── sim/
-│   └── tb_fir_filter.v
-├── docs/
-│   ├── waveform.jpg
-│   ├── fir_structure.jpg
-│   ├── output_table.txt
-├── README.md
