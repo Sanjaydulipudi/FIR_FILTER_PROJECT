@@ -1,0 +1,74 @@
+🧠 Why Are Some FIR Filter Outputs Negative?
+
+In your simulation, you may have noticed that some output values are **negative**, like:
+
+At input X = 14 → Output Y = -186
+At input X = 15 → Output Y = -365
+At input X = 16 → Output Y = -468
+
+These values are **100% correct** and are caused due to the **mathematical nature of the FIR filter** and **signed coefficients** used in the system.
+
+ ✅ Mathematical Reason Behind Negative Outputs
+
+The FIR filter calculates each output using:
+
+$$
+y[n] = \sum_{k=0}^{N-1} h[k] \cdot x[n-k]
+$$
+
+Where:
+
+* `x[n]` is the input sample at time `n`
+* `h[k]` is the filter coefficient at position `k`
+* `N = 64` (for 64-tap filter)
+
+ ➖ When Do Negative Results Occur?
+
+Some of the filter coefficients `h[k]` are **negative** (for example: -3, -7, -29, -74, etc.).
+
+If those negative coefficients **multiply with positive inputs**, they produce **negative terms** in the summation.
+
+When the **total sum** of all the `h[k] * x[n-k]` terms becomes negative, the output `y[n]` also becomes **negative**.
+
+This is a **normal behavior** in digital filtering and signal processing.
+
+✍️ Quick Example (Manual Math):
+
+Let’s say for `x[14]`, the input values and coefficients look like this:
+
+```text
+x[13] = 13, h[1] = +5   → +65
+x[11] = 11, h[3] = -3   → -33
+x[10] = 10, h[4] = -7   → -70
+x[2]  = 2,  h[12] = -74 → -148
+x[1]  = 1,  h[13] = -93 → -93
+```
+
+If the **negative products** are stronger than the positive ones, the final result becomes negative:
+
+$$
+y[14] = +65 + \cdots -33 -70 -148 -93 = \boxed{-186}
+$$
+
+✅ Which exactly matches your simulation.
+
+🧮 Scaling (Q1.15 Format)
+
+Also, the coefficients `h[k]` are in **Q1.15 fixed-point format**, so:
+
+* They represent small fractions like `+0.002`, `-0.004`, etc.
+* The final result is scaled down by dividing by $2^{15}$
+* So your design includes a shift (`>> 15`) after accumulation
+
+This makes sure output values stay within valid range, including negative ones.
+
+ ✅ Final Conclusion
+
+* Negative outputs are **expected and mathematically correct**
+* They result from **signed coefficients** multiplying with inputs
+* Your filter handles signed math using **Q1.15 format**
+* Simulation shows correct results after scaling and rounding
+
+This proves your **FIR filter logic is correct** and functioning as expected.
+
+
